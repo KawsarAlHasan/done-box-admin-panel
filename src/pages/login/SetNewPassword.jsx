@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { API } from "../../api/api";
 
 const SetNewPassword = () => {
+  const email = localStorage.getItem("email");
+  const otp_code = localStorage.getItem("otp_code");
+
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
@@ -17,10 +21,26 @@ const SetNewPassword = () => {
 
     setLoading(true); // Start loading when submitting form
     try {
-      console.log(values);
-      // const response = await API.post("/admin/set-new-password", {
-      //   password: values.password,
-      // });
+      console.log(
+        email,
+        "email",
+        otp_code,
+        "otp_code",
+        values.password,
+        "values.password",
+        values.confirmPassword,
+        "values.confirmPassword"
+      );
+
+      const response = await API.post("/auth/verify-otp/", {
+        email: email,
+        otp_code: otp_code,
+        purpose: "reset_password",
+        password: values.password,
+        retype_password: values.confirmPassword,
+      });
+
+      console.log(response, "response");
 
       // // If successful, save the token in localStorage
       // localStorage.setItem("token", response.data.data.token);
@@ -28,9 +48,10 @@ const SetNewPassword = () => {
       // Show success message
       message.success("Password updated successfully!");
 
-      // Redirect to the admin dashboard (replace with your route)
+      // // Redirect to the admin dashboard (replace with your route)
       navigate("/password-update-login");
     } catch (error) {
+      console.log(error, "error");
       // Show error message
       message.error(
         "Password update failed. Please try again." // error.response?.data?.message

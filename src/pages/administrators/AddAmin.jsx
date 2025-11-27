@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Select, message } from "antd";
 import { FaPlus } from "react-icons/fa";
-// import { API } from "../../api/api";
+import { API } from "../../api/api";
 
 const { Option } = Select;
 
@@ -15,11 +15,15 @@ const AddAdmin = ({ refetch }) => {
   const handleFinish = async (values) => {
     try {
       setLoading(true);
-      // await API.post("/admin/administrators/create/", values);
+      const res = await API.post("users/", values);
+
+      console.log(res, "res");
+
       message.success("Admin created successfully!");
       refetch?.();
       setIsModalOpen(false);
     } catch (err) {
+      console.log(err, "err");
       message.error(err.response?.data?.detail || "Failed to create admin");
     } finally {
       setLoading(false);
@@ -28,7 +32,11 @@ const AddAdmin = ({ refetch }) => {
 
   return (
     <>
-      <Button type="primary" className="mb-2 my-main-button" onClick={showModal}>
+      <Button
+        type="primary"
+        className="mb-2 my-main-button"
+        onClick={showModal}
+      >
         <FaPlus />
         New Administrators Profile Create
       </Button>
@@ -41,11 +49,23 @@ const AddAdmin = ({ refetch }) => {
       >
         <Form layout="vertical" onFinish={handleFinish}>
           <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please enter admin name" }]}
+            label="First Name"
+            name="first_name"
+            rules={[
+              { required: true, message: "Please enter admin first name" },
+            ]}
           >
-            <Input placeholder="Enter admin name" />
+            <Input placeholder="Enter admin first name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Last Name"
+            name="last_name"
+            rules={[
+              { required: true, message: "Please enter admin last name" },
+            ]}
+          >
+            <Input placeholder="Enter admin last name" />
           </Form.Item>
 
           <Form.Item
@@ -59,12 +79,25 @@ const AddAdmin = ({ refetch }) => {
             <Input placeholder="Enter admin email" />
           </Form.Item>
 
+          {/* phone number validation */}
           <Form.Item
             label="Phone Number"
             name="phone"
             rules={[{ required: true, message: "Please enter phone number" }]}
           >
             <Input placeholder="+880..." />
+          </Form.Item>
+
+          {/* Password Field */}
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              { required: true, message: "Please input your New Password!" },
+              { min: 8, message: "Password must be at least 8 characters" },
+            ]}
+          >
+            <Input.Password placeholder="Enter your new password..." />
           </Form.Item>
 
           <Form.Item
@@ -79,7 +112,13 @@ const AddAdmin = ({ refetch }) => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" className="my-main-button" htmlType="submit" loading={loading} block>
+            <Button
+              type="primary"
+              className="my-main-button"
+              htmlType="submit"
+              loading={loading}
+              block
+            >
               Create Admin
             </Button>
           </Form.Item>

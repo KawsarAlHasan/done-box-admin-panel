@@ -2,16 +2,12 @@ import { Avatar, message, Modal, Space, Table } from "antd";
 import IsError from "../../components/IsError";
 import IsLoading from "../../components/IsLoading";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-// import { API, useAllAdmins } from "../../api/api";
 import AddAdmin from "./AddAmin";
 import AdminEdit from "./AdminEdit";
-import { useAdministrators } from "../../services/administratorsService";
+import { API, useAllAdmins } from "../../api/api";
 
 function Administrators() {
-  // const { allAdmins } = useAllAdmins();
-
-  const { administrators, isLoading, isError, error, refetch } =
-    useAdministrators();
+  const { allAdmins, isLoading, isError, error, refetch } = useAllAdmins();
 
   // 🗑️ delete confirm modal
   const showDeleteConfirm = (adminId) => {
@@ -23,12 +19,12 @@ function Administrators() {
       cancelText: "Cancel",
       async onOk() {
         try {
-          // await API.post(`/admin/administrators/${adminId}/action/`, {
-          //   action: "delete",
-          // });
+          const res = await API.delete(`/users/${adminId}/`);
+          console.log(res, "res");
           message.success("Admin deleted successfully!");
           refetch();
         } catch (err) {
+          console.log(err, "err");
           message.error(err.response?.data?.error || "Failed to delete admin");
         }
       },
@@ -38,15 +34,28 @@ function Administrators() {
   const columns = [
     {
       title: <span>Sl no.</span>,
-      dataIndex: "serial_number",
-      key: "serial_number",
-      render: (serial_number) => <span className="">#{serial_number}</span>,
+      dataIndex: "id",
+      key: "id",
+      render: (_, record, serial_number) => (
+        <span className="">#{serial_number + 1}</span>
+      ),
     },
     {
       title: <span>Name</span>,
-      dataIndex: "full_name",
-      key: "full_name",
-      render: (full_name) => <span className="">{full_name}</span>,
+      dataIndex: "first_name",
+      key: "first_name",
+      render: (_, record) => (
+        <div className="flex gap-2 items-center">
+          <Avatar
+            src={record?.photo}
+            alt={record?.first_name}
+            className="!w-[45px] !h-[45px] rounded-full mt-[-5px]"
+          />
+          <div className="mt-1">
+            <h2>{record?.first_name + " " + record?.last_name}</h2>
+          </div>
+        </div>
+      ),
     },
     {
       title: <span>Email</span>,
@@ -55,16 +64,10 @@ function Administrators() {
       render: (email) => <span className="">{email}</span>,
     },
     {
-      title: <span>Phone</span>,
-      dataIndex: "phone",
-      key: "phone",
-      render: (phone) => <span className="">{phone}</span>,
-    },
-    {
       title: <span>Has Access To</span>,
-      dataIndex: "role",
-      key: "role",
-      render: (role) => <span className="">{role}</span>,
+      dataIndex: "user_role",
+      key: "user_role",
+      render: (user_role) => <span className="">{user_role}</span>,
     },
     {
       title: <span>Action</span>,
@@ -100,13 +103,15 @@ function Administrators() {
     return <IsError error={error} refetch={refetch} />;
   }
 
+  const dataSource = allAdmins?.data || [];
+
   return (
     <div className="p-4">
       <AddAdmin refetch={refetch} />
 
       <Table
         columns={columns}
-        dataSource={administrators}
+        dataSource={dataSource}
         rowKey="id"
         loading={isLoading}
         pagination={false}

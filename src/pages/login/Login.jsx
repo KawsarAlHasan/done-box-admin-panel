@@ -2,33 +2,33 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-// import { API } from "../../api/api";
+import { API } from "../../api/api";
 
 const Login = () => {
   const [loading, setLoading] = useState(false); // Loading state for login button
   const navigate = useNavigate();
 
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     navigate("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   const onFinish = async (values) => {
     setLoading(true); // Start loading when submitting form
     try {
-      // const response = await API.post("/login/", values);
+      const response = await API.post("/auth/login/", values);
 
       // // If successful, save the token in localStorage
-      // localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("token", response.data.data.access);
 
       // Show success message
       message.success("Admin Login successful!");
 
       // Redirect to the admin dashboard (replace with your route)
       window.location.href = "/";
+      console.log("response", response);
     } catch (error) {
       console.log(error);
       message.error(

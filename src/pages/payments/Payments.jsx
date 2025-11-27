@@ -1,21 +1,14 @@
 import { useState } from "react";
-import { Table, Modal, notification } from "antd";
+import { Table, Modal, notification, Avatar } from "antd";
 import IsError from "../../components/IsError";
 import IsLoading from "../../components/IsLoading";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-// import { API, useStripePayments } from "../../api/api";
-import { usePayments } from "../../services/paymentService";
+import { usePayments } from "../../api/api";
 
 const { confirm } = Modal;
 
 function Payments() {
-  const [filter, setFilter] = useState({
-    page: 1,
-    limit: 10,
-  });
-
-  const { paymentsData, pagination, isLoading, isError, error, refetch } =
-    usePayments(filter);
+  const { allPayments, isLoading, isError, error, refetch } = usePayments();
 
   const handleTableChange = (pagination, filters, sorter) => {
     setFilter((prev) => ({
@@ -28,34 +21,48 @@ function Payments() {
   const columns = [
     {
       title: <span>SL No.</span>,
-      dataIndex: "serial_number",
-      key: "serial_number",
-      render: (serial_number) => <span className="">#{serial_number}</span>,
+      dataIndex: "id",
+      key: "id",
+      render: (_, record, serial_number) => (
+        <span className="">#{serial_number + 1}</span>
+      ),
     },
     {
       title: <span>User</span>,
-      dataIndex: "full_name",
-      key: "full_name",
+      dataIndex: "user",
+      key: "user",
+      render: (user) => (
+        <div className="flex gap-2 items-center">
+          <Avatar
+            src={user?.photo}
+            alt={user?.first_name + " " + user?.last_name}
+            className="!w-[40px] !h-[40px] rounded-full mt-[-5px]"
+          />
+          <div className="mt-1">
+            <h2>{user?.first_name + " " + user?.last_name}</h2>
+          </div>
+        </div>
+      ),
     },
     {
       title: <span>Email</span>,
-      dataIndex: "email",
-      key: "email",
-      render: (email) => <span className="">{email}</span>,
+      dataIndex: "user",
+      key: "user",
+      render: (user) => <span className="">{user?.email}</span>,
     },
 
     {
       title: <span>Payments</span>,
-      dataIndex: "pay_amout",
-      key: "pay_amout",
-      render: (pay_amout) => <span className="">${pay_amout}</span>,
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => <span className="">${amount}</span>,
     },
     {
-      title: <span>date</span>,
-      dataIndex: "date",
-      key: "date",
-      render: (date) => (
-        <span className="">{new Date(date).toLocaleString()}</span>
+      title: <span>Date</span>,
+      dataIndex: "payment_at",
+      key: "payment_at",
+      render: (payment_at) => (
+        <span className="">{new Date(payment_at).toLocaleString()}</span>
       ),
     },
   ];
@@ -68,33 +75,18 @@ function Payments() {
     return <IsError error={error} refetch={refetch} />;
   }
 
-  // pagination
-  // :
-  // limit
-  // :
-  // 10
-  // page
-  // :
-  // 1
-  // totalPages
-  // :
-  // 5
-  // totalPayments
-  // :
-  // 50
+  console.log(allPayments, "allPayments");
 
-  console.log(paymentsData, "paymentsData");
+  const dataSource = allPayments || [];
 
   return (
     <div className="p-4">
       <Table
         columns={columns}
-        dataSource={paymentsData}
+        dataSource={dataSource}
         rowKey="id"
         pagination={{
-          current: filter.page,
-          pageSize: filter.limit,
-          total: pagination.totalPayments,
+          total: dataSource.length,
           showSizeChanger: [10, 20, 30, 40],
         }}
         onChange={handleTableChange}

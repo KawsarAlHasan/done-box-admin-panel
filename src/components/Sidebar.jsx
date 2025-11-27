@@ -1,55 +1,56 @@
 import { Menu } from "antd";
-import { AppstoreOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaUsers } from "react-icons/fa";
-import { FaBuildingFlag } from "react-icons/fa6";
-// import { signOutAdmin, useAdminDashboard } from "../api/api";
+import {
+  DashboardOutlined,
+  UserOutlined,
+  TeamOutlined,
+  CreditCardOutlined,
+  FileSearchOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 
-const { SubMenu } = Menu;
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { signOutAdmin, useAdminProfile } from "../api/api";
 
 const Sidebar = ({ onClick }) => {
   const location = useLocation();
-
-  // const { adminDashboard, isLoading, isError, error, refetch } =
-  //   useAdminDashboard();
-
+  const { adminProfile } = useAdminProfile();
   const navigate = useNavigate();
+
   const handleSignOut = () => {
-    // signOutAdmin();
+    signOutAdmin();
     navigate("/login");
   };
 
-  // Determine the selected key based on current route
   const getSelectedKey = () => {
     const path = location.pathname;
     if (path === "/") return ["1"];
     if (path === "/user-management") return ["user-management"];
     if (path === "/administrators") return ["3"];
     if (path === "/payments") return ["payments"];
+    if (path === "/report-managements") return ["report-managements"];
     return ["1"];
   };
 
-  const isSuperAdmin = "superadmin";
+  const isSuperAdmin = adminProfile?.user_role === "Super Admin";
 
   const sidebarItems = [
     {
       key: "1",
-      icon: <AppstoreOutlined />,
+      icon: <DashboardOutlined />,
       label: <Link to="/">Dashboard</Link>,
     },
 
     {
       key: "user-management",
-      icon: <FaUsers />,
+      icon: <UserOutlined />,
       label: <Link to="/user-management">User Management</Link>,
     },
-
 
     ...(isSuperAdmin
       ? [
           {
             key: "3",
-            icon: <FaBuildingFlag />,
+            icon: <TeamOutlined />,
             label: <Link to="/administrators">Administrators</Link>,
           },
         ]
@@ -57,32 +58,32 @@ const Sidebar = ({ onClick }) => {
 
     {
       key: "payments",
-      icon: <FaBuildingFlag />,
+      icon: <CreditCardOutlined />,
       label: <Link to="/payments">Payments</Link>,
     },
 
-    // Add logout as a menu item at the bottom
+    {
+      key: "report-managements",
+      icon: <FileSearchOutlined />,
+      label: <Link to="/report-managements">Report Managements</Link>,
+    },
+
     {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Logout",
-      className: "bottom-20",
       onClick: handleSignOut,
+      danger: true,
       style: {
         position: "absolute",
+        bottom: "20px",
         width: "100%",
       },
-      danger: true,
     },
   ];
 
   return (
-    <div
-      style={{
-        position: "relative",
-        height: "100vh",
-      }}
-    >
+    <div style={{ position: "relative", height: "100vh" }}>
       <Menu
         mode="inline"
         selectedKeys={getSelectedKey()}
@@ -93,7 +94,6 @@ const Sidebar = ({ onClick }) => {
           backgroundColor: "#ffffff",
           color: "#002436",
         }}
-        // theme="dark"
       />
     </div>
   );
