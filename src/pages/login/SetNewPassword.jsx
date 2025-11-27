@@ -21,18 +21,7 @@ const SetNewPassword = () => {
 
     setLoading(true); // Start loading when submitting form
     try {
-      console.log(
-        email,
-        "email",
-        otp_code,
-        "otp_code",
-        values.password,
-        "values.password",
-        values.confirmPassword,
-        "values.confirmPassword"
-      );
-
-      const response = await API.post("/auth/verify-otp/", {
+      const response = await API.post("/auth/reset-password/", {
         email: email,
         otp_code: otp_code,
         purpose: "reset_password",
@@ -42,13 +31,14 @@ const SetNewPassword = () => {
 
       console.log(response, "response");
 
-      // // If successful, save the token in localStorage
-      // localStorage.setItem("token", response.data.data.token);
+      //  remove email and otp_code
+      localStorage.removeItem("email");
+      localStorage.removeItem("otp_code");
 
       // Show success message
       message.success("Password updated successfully!");
 
-      // // Redirect to the admin dashboard (replace with your route)
+      // Redirect to the admin dashboard (replace with your route)
       navigate("/password-update-login");
     } catch (error) {
       console.log(error, "error");
@@ -93,7 +83,7 @@ const SetNewPassword = () => {
               name="password"
               rules={[
                 { required: true, message: "Please input your New Password!" },
-                { min: 6, message: "Password must be at least 6 characters" },
+                { min: 8, message: "Password must be at least 8 characters" },
               ]}
             >
               <Input.Password

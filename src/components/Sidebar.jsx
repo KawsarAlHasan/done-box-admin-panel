@@ -76,7 +76,7 @@ const Sidebar = ({ onClick }) => {
       danger: true,
       style: {
         position: "absolute",
-        bottom: "20px",
+        bottom: "85px",
         width: "100%",
       },
     },
