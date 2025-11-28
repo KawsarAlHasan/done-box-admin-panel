@@ -13,7 +13,6 @@ import {
 import { API } from "../api/api";
 
 const AccountSetting = ({ adminProfile, refetch }) => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
@@ -180,15 +179,8 @@ const AccountSetting = ({ adminProfile, refetch }) => {
             <Input prefix={<UserOutlined />} />
           </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Please enter your email" },
-              { type: "email", message: "Please enter a valid email" },
-            ]}
-          >
-            <Input />
+          <Form.Item label="Email" name="email">
+            <Input disabled />
           </Form.Item>
 
           <Form.Item
