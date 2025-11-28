@@ -1,5 +1,5 @@
-import { Avatar, Radio, Table, Tooltip } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
+import { Avatar, Radio, Table } from "antd";
 import IsError from "../../components/IsError";
 import IsLoading from "../../components/IsLoading";
 import { useAllReportManagements } from "../../api/api";
@@ -70,7 +70,7 @@ function ReportManagements() {
     <div>
       <div>
         <Radio.Group
-          defaultValue="bug"
+          value={type}
           buttonStyle="solid"
           onChange={handleTypeChange}
         >
