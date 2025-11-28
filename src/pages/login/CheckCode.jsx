@@ -58,7 +58,7 @@ const CheckCode = () => {
   return (
     <div className="flex justify-center items-center min-h-screen mainBG p-4">
       <div className=" p-8 shadow-lg rounded-lg   w-[530px]">
-        <img src={logo} alt="Logo" className=" w-[120px]  mx-auto pb-4" />
+        <img src={logo} alt="Logo" className=" w-[200px]  mx-auto pb-4" />
 
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">

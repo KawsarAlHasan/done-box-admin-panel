@@ -46,7 +46,7 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center mainBG min-h-screen ">
       <div className="p-8 pt-5 pb-7 shadow-lg rounded-lg w-[530px] h-[635px]">
-        <img src={logo} alt="Logo" className=" w-[120px]  mx-auto pb-4" />
+        <img src={logo} alt="Logo" className=" w-[200px]  mx-auto pb-4" />
         <h2 className="text-[30px] text-[#222222] font-bold text-center mb-6">
           Login to Account
         </h2>
